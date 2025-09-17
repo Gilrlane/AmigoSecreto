@@ -114,4 +114,32 @@ button:disabled { background: var(--muted); cursor: not-allowed; }
 }
 
 .hint { color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
+/* Animação de confete */
+@keyframes confetti-fall {
+  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(200px) rotate(360deg); opacity: 0; }
+}
+
+.confetti {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--accent);
+  top: 0;
+  left: 50%;
+  border-radius: 50%;
+  animation: confetti-fall 1s linear forwards;
+  pointer-events: none;
+}
+
+/* Brilho no cartão */
+.card-back {
+  position: relative;
+  transition: box-shadow 0.3s;
+}
+
+.card-back.glow {
+  box-shadow: 0 0 20px 6px var(--accent);
+}
+
 
