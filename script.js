@@ -47,10 +47,26 @@ drawBtn.onclick = () => {
 
 flipCardDiv.onclick = () => {
   cardInner.classList.toggle('flipped');
+
+  // efeito de brilho
+  cardBack.classList.add('glow');
+  setTimeout(() => cardBack.classList.remove('glow'), 800);
+
+  // confete
+  for(let i=0;i<15;i++){
+    const c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = Math.random() * flipCardDiv.offsetWidth + 'px';
+    c.style.backgroundColor = `hsl(${Math.random()*360}, 80%, 60%)`;
+    flipCardDiv.appendChild(c);
+    setTimeout(() => c.remove(), 1000);
+  }
+
   if(remaining.length === 0) {
     doneHint.textContent = 'Todos os amigos já foram sorteados!';
   }
 };
+
 // Botão de baixar o resultado final
 const downloadBtn = document.createElement('button');
 downloadBtn.textContent = 'Baixar arquivo do sorteio';
@@ -76,3 +92,4 @@ downloadBtn.onclick = () => {
   a.click();
   URL.revokeObjectURL(url);
 };
+
