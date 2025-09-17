@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amigo Secreto Animado</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Amigo Secreto</h1>
+
+    <div id="setup">
+      <label>Adicione todos os participantes (um por linha):</label>
+      <textarea id="participantsInput" rows="5" placeholder="Ex: Gilrlane\nCarlos\nMariana"></textarea>
+      <button id="saveParticipants">Salvar Participantes</button>
+    </div>
+
+    <div id="drawSection" class="hidden">
+      <label>Digite seu nome:</label>
+      <input type="text" id="currentName" placeholder="Seu nome">
+      <button id="drawBtn">Sortear</button>
+
+      <div class="card-flip hidden" id="flipCard">
+        <div class="card-inner" id="cardInner">
+          <div class="card-front">Clique para revelar seu amigo secreto!</div>
+          <div class="card-back" id="cardBack"></div>
+        </div>
+      </div>
+
+      <div class="hint" id="doneHint"></div>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>

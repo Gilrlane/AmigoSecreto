@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amigo Secreto Animado</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #0b1220;
+      --accent: #f6c85f;
+      --accent-hover: #e5c74f;
+      --muted: #98a0b3;
+      --white: #fff;
+    }
+
+    * { box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+    body {
+      margin: 0;
+      background: linear-gradient(180deg,#071029 0%, #071426 100%);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: var(--card);
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+
+    h1 { color: var(--accent); margin-bottom: 20px; }
+
+    label { display: block; margin: 10px 0 5px; color: var(--accent); }
+
+    input[type=text], textarea, button {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    textarea {
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--white);
+      resize: vertical;
+    }
+
+    input[type=text] {
+      margin-bottom: 10px;
+      background: rgba(255,255,255,0.05);
+      color: var(--white);
+    }
+
+    button {
+      background: var(--accent);
+      color: #07203a;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 6px;
+      transition: 0.3s;
+    }
+
+    button:hover { background: var(--accent-hover); }
+
+    button:disabled { background: var(--muted); cursor: not-allowed; }
+
+    .hidden { display: none; }
+
+    /* Cartão animado */
+    .card-flip {
+      perspective: 1000px;
+      margin-top: 20px;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 120px;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .card-inner.flipped { transform: rotateY(180deg); }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 1.2rem;
+      font-weight: 700;
+      padding: 10px;
+    }
+
+    .card-front {
+      background: rgba(246,200,95,0.2);
+      color: #071426;
+    }
+
+    .card-back {
+      background: rgba(246,200,95,0.8);
+      color: #071426;
+      transform: rotateY(180deg);
+    }
+
+    .hint { color: var(--muted); font-size: 0.85rem; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Amigo Secreto</h1>
+
+    <div id="setup">
+      <label>Adicione todos os participantes (um por linha):</label>
+      <textarea id="participantsInput" rows="5" placeholder="Ex: Gilrlane\nCarlos\nMariana"></textarea>
+      <button id="saveParticipants">Salvar Participantes</button>
+    </div>
+
+    <div id="drawSection" class="hidden">
+      <label>Digite seu nome:</label>
+      <input type="text" id="currentName" placeholder="Seu nome">
+      <button id="drawBtn">Sortear</button>
+
+      <div class="card-flip hidden" id="flipCard">
+        <div class="card-inner" id="cardInner">
+          <div class="card-front">Clique para revelar seu amigo secreto!</div>
+          <div class="card-back" id="cardBack"></div>
+        </div>
+      </div>
+
+      <div class="hint" id="doneHint"></div>
+    </div>
+  </div>
+
+  <script>
+    const setupDiv = document.getElementById('setup');
+    const drawSection = document.getElementById('drawSection');
+    const participantsInput = document.getElementById('participantsInput');
+    const saveBtn = document.getElementById('saveParticipants');
+    const currentNameInput = document.getElementById('currentName');
+    const drawBtn = document.getElementById('drawBtn');
+    const flipCardDiv = document.getElementById('flipCard');
+    const cardInner = document.getElementById('cardInner');
+    const cardBack = document.getElementById('cardBack');
+    const doneHint = document.getElementById('doneHint');
+
+    let participants = [];
+    let remaining = [];
+    let assignments = {};
+
+    saveBtn.onclick = () => {
+      const names = participantsInput.value.split('\n').map(n => n.trim()).filter(Boolean);
+      if(names.length < 2) { alert('Adicione pelo menos 2 participantes!'); return; }
+      participants = names;
+      remaining = [...participants];
+      setupDiv.classList.add('hidden');
+      drawSection.classList.remove('hidden');
+      doneHint.textContent = `Faltam sortear ${remaining.length} participantes.`;
+    };
+
+    drawBtn.onclick = () => {
+      const name = currentNameInput.value.trim();
+      if(!participants.includes(name)) { alert('Digite um nome válido da lista!'); return; }
+      if(assignments[name]) { alert('Você já sorteou seu amigo!'); return; }
+
+      const possible = remaining.filter(n => n !== name);
+      if(possible.length === 0) { alert('Todos os amigos já foram sorteados!'); return; }
+
+      const randIndex = Math.floor(Math.random() * possible.length);
+      const friend = possible[randIndex];
+
+      assignments[name] = friend;
+      remaining = remaining.filter(n => n !== friend);
+
+      cardBack.textContent = friend;
+      flipCardDiv.classList.remove('hidden');
+      cardInner.classList.remove('flipped');
+      doneHint.textContent = `Faltam sortear ${remaining.length} participantes.`;
+
+      currentNameInput.value = '';
+    };
+
+    flipCardDiv.onclick = () => {
+      cardInner.classList.toggle('flipped');
+      if(remaining.length === 0) {
+        doneHint.textContent = 'Todos os amigos já foram sorteados!';
+      }
+    };
+  </script>
+</body>
+</html>
