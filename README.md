@@ -57,7 +57,7 @@ Modificar mensagens e textos para criar sua própria atmosfera de festa.
 
 ## 📂 Estrutura do Projeto
 
-amigo-secreto-animado/
+AmigoSecreto/
 
 ├── index.html       # Página principal encantada
 
